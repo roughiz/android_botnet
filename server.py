@@ -3,7 +3,6 @@
 import socket
 from client import  Client
 import threading
-import paramiko
 import ChannelSSH
 import random
 
@@ -62,6 +61,7 @@ class Myserver():
                     if anclient is not None:
                         self.obsoletebots.update({addr[0]: anclient})
                 self.bots.update({addr[0]: nvclient})
+                nvclient.initialise_bot()
                 self.pop_bot()
             except socket.error:
                 pass
