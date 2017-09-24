@@ -21,7 +21,7 @@ class Client():
 
     def initialise_bot(self):
         try:
-            ChannelSSH.sendToChannel("**LOADPATH**;"+path_destination+""+self.getAddr()+""+self.tags+";"+path_source,self.chan)
+            ChannelSSH.sendToChannel("**LOADPATH**;"+path_destination+";"+self.getAddr()+""+self.tags+";"+path_source,self.chan)
         except Exception, e:
             print "Initialisation of path: " + str(e)
     def connect(self):
