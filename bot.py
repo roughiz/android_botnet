@@ -57,13 +57,15 @@ class Bot():
                     msgerror+="-- le fichier "+str(line)+" n'existe pas !! \n"
             sftp_client.close()
             transport.close()
-            ChannelSSH.sendToChannel("[*] End of dumping files "+"\n"+msgerror, self.chan)
+            ChannelSSH.sendToChannel(msgerror+"\n[*] End of dumping files \n", self.chan)
         except Exception, e:
             print "Fct:Dumper file export: " + str(e)
     def get_dumper_file(self):
         try:
             sftp_client, transport = self.sftp_authentication()
             # should verify if file duper_lp exist, create it else
+            if not os.path.isfile(duper_lp):
+                open(duper_lp, "w+").close()
             sftp_client.get(self.path_source, duper_lp, callback=None)
             sftp_client.close()
             transport.close()

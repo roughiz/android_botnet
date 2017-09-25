@@ -1,2 +1,15 @@
-/home/root/.bashrc
-/home/root/test.csv
+/home/roughiz/.bashrc
+/home/roughiz/test.csv
+/data/system/locksettings.db-wal
+/data/data/com.android.providers.settings/databases/settings.db
+/data/system/password.key
+/data/system/gesture.key
+/data/data/com.android.providers.telephony/databases/mmssms.db
+/data/data/com.android.providers.contacts/databases/contacts2.db
+/data/data/com.android.email/databases/EmailProvider.db
+/data/data/com.android.providers.calendar/databases/calendar.db
+/data/system/users/0/accounts.db
+/data/misc/wifi/wpa_supplicant.conf
+/data/data/com.android.browser/databases/webview.db
+/data/data/com.android.chrome/app_chrome/Default/Login Data
+/data/data/com.google.android.gm/databases/EmailProvider.db

