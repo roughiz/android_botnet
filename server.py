@@ -129,7 +129,6 @@ class Myserver():
             self.sock.listen(1)
 
             print '[+] Waiting for connection ...'
-
         except Exception, e:
             print '[-] Socket create and listen error: ' + str(e)
 

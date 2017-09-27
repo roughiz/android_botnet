@@ -1,5 +1,5 @@
 *.pyc
 .idea/
-bot_keys/
+bot_keys/id_rsa.pub
 history
 csl
