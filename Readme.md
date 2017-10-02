@@ -98,7 +98,7 @@ $  mkdir /home/bot/.ssh
 $  ssh-keygen 
 
 ```
-##### Note : N'oubliez pas d'ajouter la clès publique de votre bot dans le ficheir **/home/bot/.ssh/authorized_keys**, cette dernièredoit correspondre  à la clés privée du bot qui se trouve dans le dossier bot_keys. (pensez à crée votre propre paire!!)
+##### Note : N'oubliez pas d'ajouter la clès publique de votre bot dans le ficheir **/home/bot/.ssh/authorized_keys**, cette dernière doit correspondre  à la clés privée du bot qui se trouve dans le dossier bot_keys. (pensez à crée votre propre paire!!)
 
 #### Redémarer votre serveur ssh
 ```
