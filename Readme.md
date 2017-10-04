@@ -1,3 +1,8 @@
+# Installer la bonneversion de paramiko en utilsant la commande suivante :
+```
+$ pip install -r requirements.txt
+```
+
 # Configuration du serveur sftp sur un système unix
 
 ## Installation du serveur SSH :
