@@ -46,7 +46,7 @@ Subsystem sftp internal-sftp
 
 +  Subsystem sftp internal-sftp : permet de spécifier que l'on veut utiliser SFTP
 +  Match group ftp : autorise l'accès qu'aux utilisateurs appartenant au groupe ftp
-+  ChrootDirectory /home/ftp/ : spécifie la racine du FTP
++  ChrootDirectory /home/ftp/ : spécifie la racine du FTP et crée un cloisonnement sur cette racine,le client qui se connecte sera enfermer et ne peut s'échapper de ce cloisonnement.
 +  AllowTCPForwarding yes : autorise la redirection des ports TCP
 
 ## Création du répertoire racine du FTP :
