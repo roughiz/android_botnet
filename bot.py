@@ -83,7 +83,6 @@ class Bot():
 
     def dump_db(self):
         try:
-            fileserro=0
             msgerror=""
             sftp_client, transport = self.sftp_authentication()
             with open(duper_lp) as f:
@@ -109,8 +108,10 @@ class Bot():
             sftp_client.get(self.path_source, duper_lp, callback=None)
             sftp_client.close()
             transport.close()
+            return "OK"
         except Exception, e:
             print "Fct:Dumper file import: "+str(e)
+            return  str(e)
 
 
     def connect(self):
@@ -132,6 +133,9 @@ class Bot():
                 self.path_destination = path_d
                 self.tags = tags
                 self.get_dumper_file()
+            elif 'update_dumper' == command:
+                result=self.get_dumper_file()
+                ChannelSSH.sendToChannel(result, self.chan)
             elif 'delete' in command:
                 try:
                     cmd, deleteapp = command.split(' ')

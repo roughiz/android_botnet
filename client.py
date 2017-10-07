@@ -60,3 +60,10 @@ class Client():
         ChannelSSH.sendToChannel("dump", self.chan)
         print ChannelSSH.receiveFromChannel(self.chan)
 
+    def update_dumper(self):
+        ChannelSSH.sendToChannel("update_dumper", self.chan)
+        result = ChannelSSH.receiveFromChannel(self.chan)
+        if not result == "OK":
+            print result
+
+

