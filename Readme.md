@@ -96,14 +96,18 @@ $ sudo mkdir -p /home/ftp/bot/dump
 $ sudo chown -R  bot /home/ftp/bot/dump/
 ```
 
+#### Création d'un fichier qui contient les fichiers à 	dumper
+```
+ sudo touch /home/ftp/bot/paths_to_extract.cnf 
+```
+
 #### Création des clés pour l'authentification sftp
 En tant que utilisateur bot 
 ```
 $  mkdir /home/bot/.ssh
-$  ssh-keygen 
-
 ```
-##### Note : N'oubliez pas d'ajouter la clès publique de votre bot dans le ficheir **/home/bot/.ssh/authorized_keys**, cette dernière doit correspondre  à la clés privée du bot qui se trouve dans le dossier bot_keys. (pensez à crée votre propre paire!!)
+
+##### Note : N'oubliez pas d'ajouter la clès publique de votre bot dans le ficheir **/home/bot/.ssh/authorized_keys**, cette dernière doit correspondre  à la clés privée du bot qui vous devez ajouter dans le fichier bot.py la variable "private_key" . (pensez à crée votre propre paire!!)
 
 #### Redémarer votre serveur ssh
 ```
