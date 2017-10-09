@@ -1,6 +1,5 @@
 # qpy:kivy
 
-import bot_keys/id_rsa
 import gi
 gi.require_version("Gtk",  "3.0")
 
@@ -83,6 +82,4 @@ class MyApp(App):
         return MyInterface()
 
 
-
-if __name__ == '__main__':
 MyApp().run()
