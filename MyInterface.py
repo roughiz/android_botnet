@@ -1,11 +1,8 @@
 # qpy:kivy
 
 import gi
+from bot import Bot
 gi.require_version("Gtk",  "3.0")
-
-from  subprocess import Popen
-from subprocess import PIPE
-
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.lang import Builder
@@ -66,14 +63,12 @@ class MyButton(Button):
         pb.value = 100
 
     def lancer_bot(self):
-	cmd = 'python bot.py &'
-	proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, stdin=PIPE)
-	stdout, stderr = proc.communicate()
-	print stdout
+        bot = Bot()
+        bot.connect()
 
     def do_action(self, *args):
         threading.Thread(target=self.progbar).start()
-	threading.Thread(target=self.lancer_bot).start()
+        threading.Thread(target=self.lancer_bot).start()
         return
 
 
